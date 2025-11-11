@@ -306,10 +306,10 @@ resource "launchdarkly_custom_role" "ld_admins" {
   }
 }
 
-# Lead Engineers Role - scoped to specific view(s), can manage flags in non-critical environments, can request changes in critical environments
-resource "launchdarkly_custom_role" "lead_developers" {
-  key         = "lead-developers"
-  name        = "Lead developers"
+# Lead Developers Role - scoped to specific view(s), can manage flags in non-critical environments, can request changes in critical environments
+resource "launchdarkly_custom_role" "ii_lead_developers" {
+  key         = "ii-lead-developers"
+  name        = "II: Lead Developers"
   description = "Can manage all flag actions in non-critical environments and submit change requests for critical environments. Full access to experiments, metrics, segments, and release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
