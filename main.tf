@@ -17,216 +17,70 @@ data "launchdarkly_project" "interactive_investor" {
   key = "default"
 }
 
+# Teams/Squads definition - single source of truth
+locals {
+  teams = {
+    activation = {
+      key  = "activation"
+      name = "Activation"
+    }
+    acquisition = {
+      key  = "acquisition"
+      name = "Acquisition"
+    }
+    content_and_research = {
+      key  = "content-and-research"
+      name = "Content and Research"
+    }
+    design_architecture_and_system = {
+      key  = "design-architecture-and-system"
+      name = "Design, Architecture and System"
+    }
+    portfolio_and_trading = {
+      key  = "portfolio-and-trading"
+      name = "Portfolio and Trading"
+    }
+    proposition_2 = {
+      key  = "proposition-2"
+      name = "Proposition 2"
+    }
+    servicing_1 = {
+      key  = "servicing-1"
+      name = "Servicing 1"
+    }
+    servicing_2 = {
+      key  = "servicing-2"
+      name = "Servicing 2"
+    }
+  }
+}
+
 # Views - used for managing access to feature flags used by the different teams
-resource "launchdarkly_view" "acquisition" {
-  key         = "acquisition"
-  name        = "Acquisition"
+resource "launchdarkly_view" "teams" {
+  for_each = local.teams
+
+  key         = each.value.key
+  name        = each.value.name
   project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Acquisition feature flags"
+  description = "View for ${each.value.name} feature flags"
   maintainer_id = var.view_maintainer_id
   generate_sdk_keys = true
-  tags = ["acquisition"]
+  tags = [each.value.key]
 }
 
-resource "launchdarkly_view" "activation" {
-  key         = "activation"
-  name        = "Activation"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Activation feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["activation"]
-}
-
-resource "launchdarkly_view" "content_and_research" {
-  key         = "content-and-research"
-  name        = "Content and Research"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Content and Research feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["content-and-research"]
-}
-
-resource "launchdarkly_view" "design_architecture_and_system" {
-  key         = "design-architecture-and-system"
-  name        = "Design, Architecture and System"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Design, Architecture and System feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["design-architecture-and-system"]
-}
-
-resource "launchdarkly_view" "portfolio_and_trading" {
-  key         = "portfolio-and-trading" 
-  name        = "Portfolio and Trading"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Portfolio and Trading feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["portfolio-and-trading"]
-}
-
-resource "launchdarkly_view" "proposition_2" {
-  key         = "proposition-2"
-  name        = "Proposition 2"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Proposition 2 feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["proposition-2"]
-}
-
-resource "launchdarkly_view" "servicing_1" {
-  key         = "servicing-1"
-  name        = "Servicing 1"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Servicing 1 feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["servicing-1"]
-}
-
-resource "launchdarkly_view" "servicing_2" {
-  key         = "servicing-2"
-  name        = "Servicing 2"
-  project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Servicing 2 feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["servicing-2"]
-}
 # Teams
-resource "launchdarkly_team" "acquisition" {
-  key         = "ii-acquisition"
-  name        = "II: Acquisition"
-  description = "Team for Acquisition members with access to Acquisition feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.acquisition.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
+resource "launchdarkly_team" "teams" {
+  for_each = local.teams
 
-resource "launchdarkly_team" "activation" {
-  key         = "ii-activation"
-  name        = "II: Activation"
-  description = "Team for Activation members with access to Activation feature flags"
+  key         = each.value.key
+  name        = each.value.name
+  description = "Team for ${each.value.name} members with access to ${each.value.name} feature flags"
   maintainers = [var.team_maintainer_id]
   member_ids  = []
   
   role_attributes {
     key    = "viewKeys"
-    values = [launchdarkly_view.activation.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "content_and_research" {
-  key         = "ii-content-and-research"
-  name        = "II: Content and Research"
-  description = "Team for Content and Research members with access to Content and Research feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.content_and_research.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "design_architecture_and_system" {
-  key         = "ii-design-architecture-and-system"
-  name        = "II: Design, Architecture and System"
-  description = "Team for Design, Architecture and System members with access to Design, Architecture and System feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.design_architecture_and_system.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "portfolio_and_trading" {
-  key         = "ii-portfolio-and-trading"
-  name        = "II: Portfolio and Trading"
-  description = "Team for Portfolio and Trading members with access to Portfolio and Trading feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.portfolio_and_trading.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "proposition_2" {
-  key         = "ii-proposition-2"
-  name        = "II: Proposition 2"
-  description = "Team for Proposition 2 members with access to Proposition 2 feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.proposition_2.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "servicing_1" {
-  key         = "ii-servicing-1"
-  name        = "II: Servicing 1"
-  description = "Team for Servicing 1 members with access to Servicing 1 feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.servicing_1.key]
-  }
-  
-  lifecycle {
-    ignore_changes = [member_ids]
-  }
-}
-
-resource "launchdarkly_team" "servicing_2" {
-  key         = "ii-servicing-2"
-  name        = "II: Servicing 2"
-  description = "Team for Servicing 2 members with access to Servicing 2 feature flags"
-  maintainers = [var.team_maintainer_id]
-  member_ids  = []
-  
-  role_attributes {
-    key    = "viewKeys"
-    values = [launchdarkly_view.servicing_2.key]
+    values = [launchdarkly_view.teams[each.key].key]
   }
   
   lifecycle {
@@ -235,9 +89,9 @@ resource "launchdarkly_team" "servicing_2" {
 }
 # Custom Roles
 # LD Admins Role - full access to LaunchDarkly (mimics built-in admin role)
-resource "launchdarkly_custom_role" "ii_ld_admins" {
-  key         = "ii-ld-admins"
-  name        = "II: LD Admins"
+resource "launchdarkly_custom_role" "ld_admins" {
+  key         = "ld-admins"
+  name        = "LD Admins"
   description = "Full administrative access to all LaunchDarkly resources including account settings, integrations, members, and all project resources"
   base_permissions = "no_access"
   
@@ -417,9 +271,9 @@ resource "launchdarkly_custom_role" "ii_ld_admins" {
 }
 
 # Lead Engineers Role - scoped to specific view(s), can manage flags in non-critical environments, can request changes in critical environments
-resource "launchdarkly_custom_role" "ii_lead_developers" {
-  key         = "ii-lead-developers"
-  name        = "II: Lead developers"
+resource "launchdarkly_custom_role" "lead_developers" {
+  key         = "lead-developers"
+  name        = "Lead developers"
   description = "Can manage all flag actions in non-critical environments and submit change requests for critical environments. Full access to experiments, metrics, segments, and release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
@@ -510,9 +364,9 @@ resource "launchdarkly_custom_role" "ii_lead_developers" {
 }
 
 # Engineers Role - scoped to specific view(s), can only modify flags in non-critical environments
-resource "launchdarkly_custom_role" "ii_developers" {
-  key         = "ii-developers"
-  name        = "II: Developers"
+resource "launchdarkly_custom_role" "developers" {
+  key         = "developers"
+  name        = "Developers"
   description = "Can modify flags and segments in non-critical environments only. View-only access to critical environments. Full access to experiments, metrics, holdouts, and layers. No access to release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
@@ -580,9 +434,9 @@ resource "launchdarkly_custom_role" "ii_developers" {
 }
 
 # Business Role - read-only access to flags, can manage experimentation resources
-resource "launchdarkly_custom_role" "ii_business_users" {
-  key         = "ii-business-users"
-  name        = "II: Business Users"
+resource "launchdarkly_custom_role" "business_users" {
+  key         = "business-users"
+  name        = "Business Users"
   description = "Read-only access to flags. Full access to manage experiments, holdouts, layers, metrics, and metric groups in all environments. Ideal for product managers and business analysts running experiments."
   base_permissions = "no_access"
   
@@ -637,9 +491,9 @@ resource "launchdarkly_custom_role" "ii_business_users" {
 }
 
 # QA Testers Role - can modify flag targeting in non-critical environments
-resource "launchdarkly_custom_role" "ii_qa_testers" {
-  key         = "ii-qa-testers"
-  name        = "II: QA Testers"
+resource "launchdarkly_custom_role" "qa_testers" {
+  key         = "qa-testers"
+  name        = "QA Testers"
   description = "Can modify flag targeting (toggle flags, update rules, targets, and prerequisites) in non-critical environments for testing purposes. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   

@@ -20,41 +20,41 @@ Terraform configuration for managing LaunchDarkly resources for Interactive Inve
   - Servicing 1 (`servicing-1`)
   - Servicing 2 (`servicing-2`)
 - **Teams**:
-  - II: Activation (`ii-activation`)
-  - II: Acquisition (`ii-acquisition`)
-  - II: Content and Research (`ii-content-and-research`)
-  - II: Design Architecture and System (`ii-design-architecture-and-system`)
-  - II: Portfolio and Trading (`ii-portfolio-and-trading`)
-  - II: Proposition 2 (`ii-proposition-2`)
-  - II: Servicing 1 (`ii-servicing-1`)
-  - II: Servicing 2 (`ii-servicing-2`)
+  - Activation (`activation`)
+  - Acquisition (`acquisition`)
+  - Content and Research (`content-and-research`)
+  - Design Architecture and System (`design-architecture-and-system`)
+  - Portfolio and Trading (`portfolio-and-trading`)
+  - Proposition 2 (`proposition-2`)
+  - Servicing 1 (`servicing-1`)
+  - Servicing 2 (`servicing-2`)
 - **Custom Roles**: Five custom roles with different permission levels
 
 ## Custom Roles
 
-### 1. II: LD Admins (`ii-ld-admins`)
+### 1. LD Admins (`ld-admins`)
 Full administrative access to all LaunchDarkly resources including account settings, integrations, members, and all project resources. Mimics the built-in admin role.
 
-### 2. II: Lead Developers (`ii-lead-developers`)
+### 2. Lead Developers (`lead-developers`)
 - Can manage all flag actions in non-critical environments
 - Can submit change requests for critical environments (cannot review/apply them)
 - Full access to experiments, metrics, segments, and release pipelines
 - Scoped to specific views via role attributes
 
-### 3. II: Developers (`ii-developers`)
+### 3. Developers (`developers`)
 - Can modify flags and segments in non-critical environments only
 - View-only access to critical environments (can update flag metadata but not targeting)
 - Full access to experiments, metrics, holdouts, and layers in non-critical environments
 - No access to release pipelines
 - Scoped to specific views via role attributes
 
-### 4. II: Business Users (`ii-business-users`)
+### 4. Business Users (`business-users`)
 - Read-only access to flags
 - Full access to manage experiments, holdouts, layers, metrics, and metric groups in all environments
 - Ideal for product managers and business analysts running experiments
 - Scoped to specific views via role attributes
 
-### 5. II: QA Testers (`ii-qa-testers`)
+### 5. QA Testers (`qa-testers`)
 - Can modify flag targeting (toggle flags, update rules, targets, and prerequisites) in non-critical environments for testing purposes
 - Scoped to specific views via role attributes
 
