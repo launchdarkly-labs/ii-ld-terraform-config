@@ -115,6 +115,68 @@ This configuration uses an existing LaunchDarkly project (`default`) and creates
 - **Teams**: Eight teams with team-specific role attributes (`viewKeys`)
 - **Custom Roles**: Five custom roles with different permission levels for various team members
 
+## Managing Teams/Squads
+
+### Adding a New Team/Squad
+
+To add a new team/squad, you only need to edit **one place** in `main.tf`:
+
+1. **Locate the `local.teams` map** in `main.tf` (around line 48-83)
+2. **Add a new entry** to the map with the following structure:
+   ```hcl
+   your_team_key = {
+     key  = "your-team-key"  # LaunchDarkly resource key (use kebab-case)
+     name = "Your Team Name" # Display name shown in LaunchDarkly UI
+   }
+   ```
+3. **Run Terraform**:
+   ```bash
+   terraform plan  # Preview the changes
+   terraform apply # Create the new view and team
+   ```
+
+**Example:**
+```hcl
+locals {
+  teams = {
+    # ... existing teams ...
+    new_team = {
+      key  = "new-team"
+      name = "New Team"
+    }
+  }
+}
+```
+
+The view and team resources will be automatically created from this configuration.
+
+### Modifying an Existing Team/Squad
+
+1. **Locate the team entry** in the `local.teams` map in `main.tf`
+2. **Update the `key` or `name` fields** as needed
+3. **Run Terraform**:
+   ```bash
+   terraform plan  # Preview the changes
+   terraform apply # Update the resources
+   ```
+
+### Removing a Team/Squad
+
+1. **Remove the team entry** from the `local.teams` map in `main.tf`
+2. **Run Terraform**:
+   ```bash
+   terraform plan  # Preview the changes (will show destruction)
+   terraform apply # Destroy the view and team
+   ```
+
+### Important Notes
+
+- **Only edit the `local.teams` map** - The view and team resources are automatically generated using `for_each` and should not be edited directly
+- The map key (e.g., `activation`) is used as the Terraform resource identifier (use `snake_case`)
+- The `key` field (e.g., `"activation"`) is used as the LaunchDarkly resource key (use `kebab-case`)
+- The `name` field is the display name shown in the LaunchDarkly UI
+- After making changes, always run `terraform plan` first to preview what will be created/modified/destroyed
+
 ## Notes
 
 - Team membership (`member_ids`) is managed outside of Terraform to allow flexible member management via the LaunchDarkly UI

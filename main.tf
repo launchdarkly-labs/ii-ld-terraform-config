@@ -17,7 +17,34 @@ data "launchdarkly_project" "interactive_investor" {
   key = "default"
 }
 
-# Teams/Squads definition - single source of truth
+# ============================================================================
+# TEAMS/SQUADS CONFIGURATION - SINGLE SOURCE OF TRUTH
+# ============================================================================
+# 
+# ⚠️  IMPORTANT: This is the ONLY place you need to edit when adding or modifying teams/squads!
+# 
+# To add a new team/squad:
+#   1. Add a new entry to the `teams` map below with:
+#      - A unique key (used as the Terraform resource identifier, use snake_case)
+#      - A `key` field (used as the LaunchDarkly resource key, use kebab-case)
+#      - A `name` field (the display name shown in LaunchDarkly UI)
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to create the new view and team
+#
+# To modify an existing team/squad:
+#   1. Update the `key` or `name` fields in the corresponding entry below
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to update the resources
+#
+# To remove a team/squad:
+#   1. Remove the corresponding entry from the `teams` map below
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to destroy the view and team
+#
+# Note: The views and teams resources below are automatically generated from this map.
+#       You do NOT need to modify those resources directly.
+# ============================================================================
+
 locals {
   teams = {
     activation = {
@@ -55,7 +82,15 @@ locals {
   }
 }
 
+# ============================================================================
+# AUTOMATICALLY GENERATED RESOURCES - DO NOT EDIT DIRECTLY
+# ============================================================================
+# The following resources are automatically generated from the `local.teams` map above.
+# To add, modify, or remove teams/squads, edit the `local.teams` map instead.
+# ============================================================================
+
 # Views - used for managing access to feature flags used by the different teams
+# Automatically created for each entry in local.teams
 resource "launchdarkly_view" "teams" {
   for_each = local.teams
 
@@ -68,7 +103,8 @@ resource "launchdarkly_view" "teams" {
   tags = [each.value.key]
 }
 
-# Teams
+# Teams - automatically created for each entry in local.teams
+# Each team is linked to its corresponding view via role_attributes
 resource "launchdarkly_team" "teams" {
   for_each = local.teams
 
