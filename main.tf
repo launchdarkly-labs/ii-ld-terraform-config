@@ -3,7 +3,7 @@ terraform {
   required_providers {
     launchdarkly = {
       source  = "launchdarkly/launchdarkly"
-      version = "2.26.0-beta.1"
+      version = "2.26.0-beta.4"
     }
   }
 }
@@ -12,94 +12,129 @@ provider "launchdarkly" {
   access_token = var.launchdarkly_access_token
 }
 
-# Interactive Investor Project
-resource "launchdarkly_project" "interactive_investor" {
-  key  = "interactive-investor"
-  name = "Interactive Investor"
-  default_client_side_availability {
-    using_environment_id = true
-    using_mobile_key     = true
-  }
-  
-  # Development Environment
-  environments {
-    key   = "devl"
-    name  = "Development"
-    color = "3BBD96"
-  }
-  
-  # QA Environment
-  environments {
-    key   = "qa"
-    name  = "QA"
-    color = "87CEEB"
-  }
-  
-  # QA2 Environment
-  environments {
-    key   = "qa2"
-    name  = "QA2"
-    color = "F6D383"
-  }
-  
-  # Production Environment
-  # Marked as critical, requires comments, and confirmation of changes
-  # Uses ServiceNow for approvals (needs to be configured in ServiceNow)
-  environments {
-    key   = "prod"
-    name  = "Production"
-    color = "F55F4B"
-    critical = true
-    require_comments = true
-    confirm_changes = true
-    approval_settings {
-      required = true
-      # ServiceNow integration is not yet configured in LaunchDarkly - commenting out for now
-      # service_kind = "servicenow"
-      # service_config = {
-      #   template = "sys_id"
-      #   detail_column = "change request column name (justification)"
-      # }
+# Interactive Investor Project - Using existing default project
+data "launchdarkly_project" "interactive_investor" {
+  key = "default"
+}
+
+# ============================================================================
+# TEAMS/SQUADS CONFIGURATION
+# ============================================================================
+# 
+# IMPORTANT: This is the ONLY place you need to edit when adding or modifying teams/squads!
+# 
+# To add a new team/squad:
+#   1. Add a new entry to the `teams` map below with:
+#      - A unique key (used as the Terraform resource identifier, use snake_case)
+#      - A `key` field (used as the LaunchDarkly resource key, use kebab-case)
+#      - A `name` field (the display name shown in LaunchDarkly UI)
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to create the new view and team
+#
+# To modify an existing team/squad:
+#   1. Update the `key` or `name` fields in the corresponding entry below
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to update the resources
+#
+# To remove a team/squad:
+#   1. Remove the corresponding entry from the `teams` map below
+#   2. Run `terraform plan` to preview changes
+#   3. Run `terraform apply` to destroy the view and team
+#
+# Note: The views and teams resources below are automatically generated from this map.
+#       You do NOT need to modify those resources directly.
+# ============================================================================
+
+locals {
+  teams = {
+    activation = {
+      key  = "activation"
+      name = "Activation"
+    }
+    acquisition = {
+      key  = "acquisition"
+      name = "Acquisition"
+    }
+    content_and_research = {
+      key  = "content-and-research"
+      name = "Content and Research"
+    }
+    design_architecture_and_system = {
+      key  = "design-architecture-and-system"
+      name = "Design, Architecture and System"
+    }
+    portfolio_and_trading = {
+      key  = "portfolio-and-trading"
+      name = "Portfolio and Trading"
+    }
+    proposition_2 = {
+      key  = "proposition-2"
+      name = "Proposition 2"
+    }
+    servicing_1 = {
+      key  = "servicing-1"
+      name = "Servicing 1"
+    }
+    servicing_2 = {
+      key  = "servicing-2"
+      name = "Servicing 2"
     }
   }
 }
 
+# ============================================================================
+# TEAMS & VIEWS ARE AUTOMATICALLY GENERATED - DO NOT EDIT DIRECTLY
+# ============================================================================
+# The following resources are automatically generated from the `local.teams` map above.
+# To add, modify, or remove teams/squads, edit the `local.teams` map instead.
+# ============================================================================
+
 # Views - used for managing access to feature flags used by the different teams
-resource "launchdarkly_view" "squad_a" {
-  key         = "squad-a"
-  name        = "Squad A"
-  project_key = launchdarkly_project.interactive_investor.key
-  description = "View for Squad A's feature flags"
+# Automatically created for each entry in local.teams
+resource "launchdarkly_view" "teams" {
+  for_each = local.teams
+
+  key         = each.value.key
+  name        = each.value.name
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for ${each.value.name} feature flags"
   maintainer_id = var.view_maintainer_id
   generate_sdk_keys = true
-  tags = ["squad-a"]
+  tags = [each.value.key]
 }
 
-resource "launchdarkly_view" "squad_b" {
-  key         = "squad-b"
-  name        = "Squad B"
-  project_key = launchdarkly_project.interactive_investor.key
-  description = "View for Squad B's feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["squad-b"]
+# Teams - automatically created for each entry in local.teams
+# Each team is linked to its corresponding view via role_attributes
+resource "launchdarkly_team" "teams" {
+  for_each = local.teams
+
+  key         = each.value.key
+  name        = each.value.name
+  description = "Team for ${each.value.name} members with access to ${each.value.name} feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.teams[each.key].key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
 }
 
-resource "launchdarkly_view" "squad_c" {
-  key         = "squad-c"
-  name        = "Squad C"
-  project_key = launchdarkly_project.interactive_investor.key
-  description = "View for Squad C's feature flags"
-  maintainer_id = var.view_maintainer_id
-  generate_sdk_keys = true
-  tags = ["squad-c"]
-}
+# ============================================================================
+# CUSTOM ROLES DEFINITIONS
+# ============================================================================
+# The following resources are manually defined custom roles.
+# To add, modify, or remove custom roles, edit the resources below.
+# ============================================================================
 
-# Custom Roles
 # LD Admins Role - full access to LaunchDarkly (mimics built-in admin role)
-resource "launchdarkly_custom_role" "ii_ld_admins" {
-  key         = "ii-ld-admins"
-  name        = "II: LD Admins"
+resource "launchdarkly_custom_role" "ld_admins" {
+  key         = "ld-admins"
+  name        = "LD Admins"
   description = "Full administrative access to all LaunchDarkly resources including account settings, integrations, members, and all project resources"
   base_permissions = "no_access"
   
@@ -279,9 +314,9 @@ resource "launchdarkly_custom_role" "ii_ld_admins" {
 }
 
 # Lead Developers Role - scoped to specific view(s), can manage flags in non-critical environments, can request changes in critical environments
-resource "launchdarkly_custom_role" "ii_lead_developers" {
-  key         = "ii-lead-developers"
-  name        = "II: Lead Developers"
+resource "launchdarkly_custom_role" "lead_developers" {
+  key         = "lead-developers"
+  name        = "Lead Developers"
   description = "Can manage all flag actions in non-critical environments and submit change requests for critical environments. Full access to experiments, metrics, segments, and release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
@@ -309,7 +344,7 @@ resource "launchdarkly_custom_role" "ii_lead_developers" {
   # Deny flag actions in critical environments - can't review/apply change approval requests
   policy_statements {
     effect      = "deny"
-    not_actions = ["reviewApprovalRequest", "applyApprovalRequest", "bypassRequiredApproval"]
+    actions = ["reviewApprovalRequest", "applyApprovalRequest", "bypassRequiredApproval"]
     resources   = ["proj/*:env/*;{critical:true}:flag/*;view:$${roleAttribute/viewKeys}"]
   }
   
@@ -372,9 +407,9 @@ resource "launchdarkly_custom_role" "ii_lead_developers" {
 }
 
 # Engineers Role - scoped to specific view(s), can only modify flags in non-critical environments
-resource "launchdarkly_custom_role" "ii_developers" {
-  key         = "ii-developers"
-  name        = "II: Developers"
+resource "launchdarkly_custom_role" "developers" {
+  key         = "developers"
+  name        = "Developers"
   description = "Can modify flags and segments in non-critical environments only. View-only access to critical environments. Full access to experiments, metrics, holdouts, and layers. No access to release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
@@ -442,9 +477,9 @@ resource "launchdarkly_custom_role" "ii_developers" {
 }
 
 # Business Role - read-only access to flags, can manage experimentation resources
-resource "launchdarkly_custom_role" "ii_business_users" {
-  key         = "ii-business-users"
-  name        = "II: Business Users"
+resource "launchdarkly_custom_role" "business_users" {
+  key         = "business-users"
+  name        = "Business Users"
   description = "Read-only access to flags. Full access to manage experiments, holdouts, layers, metrics, and metric groups in all environments. Ideal for product managers and business analysts running experiments."
   base_permissions = "no_access"
   
@@ -499,9 +534,9 @@ resource "launchdarkly_custom_role" "ii_business_users" {
 }
 
 # QA Testers Role - can modify flag targeting in non-critical environments
-resource "launchdarkly_custom_role" "ii_qa_testers" {
-  key         = "ii-qa-testers"
-  name        = "II: QA Testers"
+resource "launchdarkly_custom_role" "qa_testers" {
+  key         = "qa-testers"
+  name        = "QA Testers"
   description = "Can modify flag targeting (toggle flags, update rules, targets, and prerequisites) in non-critical environments for testing purposes. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
