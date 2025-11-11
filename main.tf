@@ -18,10 +18,10 @@ data "launchdarkly_project" "interactive_investor" {
 }
 
 # ============================================================================
-# TEAMS/SQUADS CONFIGURATION - SINGLE SOURCE OF TRUTH
+# TEAMS/SQUADS CONFIGURATION
 # ============================================================================
 # 
-# ⚠️  IMPORTANT: This is the ONLY place you need to edit when adding or modifying teams/squads!
+# IMPORTANT: This is the ONLY place you need to edit when adding or modifying teams/squads!
 # 
 # To add a new team/squad:
 #   1. Add a new entry to the `teams` map below with:
@@ -83,7 +83,7 @@ locals {
 }
 
 # ============================================================================
-# AUTOMATICALLY GENERATED RESOURCES - DO NOT EDIT DIRECTLY
+# TEAMS & VIEWS ARE AUTOMATICALLY GENERATED - DO NOT EDIT DIRECTLY
 # ============================================================================
 # The following resources are automatically generated from the `local.teams` map above.
 # To add, modify, or remove teams/squads, edit the `local.teams` map instead.
@@ -123,7 +123,14 @@ resource "launchdarkly_team" "teams" {
     ignore_changes = [member_ids]
   }
 }
-# Custom Roles
+
+# ============================================================================
+# CUSTOM ROLES DEFINITIONS
+# ============================================================================
+# The following resources are manually defined custom roles.
+# To add, modify, or remove custom roles, edit the resources below.
+# ============================================================================
+
 # LD Admins Role - full access to LaunchDarkly (mimics built-in admin role)
 resource "launchdarkly_custom_role" "ld_admins" {
   key         = "ld-admins"
