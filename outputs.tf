@@ -12,30 +12,10 @@ output "interactive_investor_project" {
 output "views" {
   description = "Views"
   value = {
-    ii_ld_admins = {
-      id   = launchdarkly_custom_role.ii_ld_admins.id
-      key  = launchdarkly_custom_role.ii_ld_admins.key
-      name = launchdarkly_custom_role.ii_ld_admins.name
-    }
-    ii_lead_developers = {
-      id   = launchdarkly_custom_role.ii_lead_developers.id
-      key  = launchdarkly_custom_role.ii_lead_developers.key
-      name = launchdarkly_custom_role.ii_lead_developers.name
-    }
-    ii_developers = {
-      id   = launchdarkly_custom_role.ii_developers.id
-      key  = launchdarkly_custom_role.ii_developers.key
-      name = launchdarkly_custom_role.ii_developers.name
-    }
-    ii_business_users = {
-      id   = launchdarkly_custom_role.ii_business_users.id
-      key  = launchdarkly_custom_role.ii_business_users.key
-      name = launchdarkly_custom_role.ii_business_users.name
-    }
-    ii_qa_testers = {
-      id   = launchdarkly_custom_role.ii_qa_testers.id
-      key  = launchdarkly_custom_role.ii_qa_testers.key
-      name = launchdarkly_custom_role.ii_qa_testers.name
+    for key, view in launchdarkly_view.teams : key => {
+      id   = view.id
+      key  = view.key
+      name = view.name
     }
   }
 }
