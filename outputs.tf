@@ -12,20 +12,45 @@ output "interactive_investor_project" {
 output "views" {
   description = "Views"
   value = {
-    squad_a = {
-      id   = launchdarkly_view.squad_a.id
-      key  = launchdarkly_view.squad_a.key
-      name = launchdarkly_view.squad_a.name
+    activation = {
+      id   = launchdarkly_view.activation.id
+      key  = launchdarkly_view.activation.key
+      name = launchdarkly_view.activation.name
     }
-    squad_b = {
-      id   = launchdarkly_view.squad_b.id
-      key  = launchdarkly_view.squad_b.key
-      name = launchdarkly_view.squad_b.name
+    acquisition = {
+      id   = launchdarkly_view.acquisition.id
+      key  = launchdarkly_view.acquisition.key
+      name = launchdarkly_view.acquisition.name
     }
-    squad_c = {
-      id   = launchdarkly_view.squad_c.id
-      key  = launchdarkly_view.squad_c.key
-      name = launchdarkly_view.squad_c.name
+    content_and_research = {
+      id   = launchdarkly_view.content_and_research.id
+      key  = launchdarkly_view.content_and_research.key
+      name = launchdarkly_view.content_and_research.name
+    }
+    design_architecture_and_system = {
+      id   = launchdarkly_view.design_architecture_and_system.id
+      key  = launchdarkly_view.design_architecture_and_system.key
+      name = launchdarkly_view.design_architecture_and_system.name
+    }
+    portfolio_and_trading = {
+      id   = launchdarkly_view.portfolio_and_trading.id
+      key  = launchdarkly_view.portfolio_and_trading.key
+      name = launchdarkly_view.portfolio_and_trading.name
+    }
+    proposition_2 = {
+      id   = launchdarkly_view.proposition_2.id
+      key  = launchdarkly_view.proposition_2.key
+      name = launchdarkly_view.proposition_2.name
+    }
+    servicing_1 = {
+      id   = launchdarkly_view.servicing_1.id
+      key  = launchdarkly_view.servicing_1.key
+      name = launchdarkly_view.servicing_1.name
+    }
+    servicing_2 = {
+      id   = launchdarkly_view.servicing_2.id
+      key  = launchdarkly_view.servicing_2.key
+      name = launchdarkly_view.servicing_2.name
     }
   }
 }
@@ -33,20 +58,45 @@ output "views" {
 output "teams" {
   description = "Teams"
   value = {
-    squad_a = {
-      id   = launchdarkly_team.squad_a.id
-      key  = launchdarkly_team.squad_a.key
-      name = launchdarkly_team.squad_a.name
+    activation = {
+      id   = launchdarkly_team.activation.id
+      key  = launchdarkly_team.activation.key
+      name = launchdarkly_team.activation.name
     }
-    squad_b = {
-      id   = launchdarkly_team.squad_b.id
-      key  = launchdarkly_team.squad_b.key
-      name = launchdarkly_team.squad_b.name
+    acquisition = {
+      id   = launchdarkly_team.acquisition.id
+      key  = launchdarkly_team.acquisition.key
+      name = launchdarkly_team.acquisition.name
     }
-    squad_c = {
-      id   = launchdarkly_team.squad_c.id
-      key  = launchdarkly_team.squad_c.key
-      name = launchdarkly_team.squad_c.name
+    content_and_research = {
+      id   = launchdarkly_team.content_and_research.id
+      key  = launchdarkly_team.content_and_research.key
+      name = launchdarkly_team.content_and_research.name
+    }
+    design_architecture_and_system = {
+      id   = launchdarkly_team.design_architecture_and_system.id
+      key  = launchdarkly_team.design_architecture_and_system.key
+      name = launchdarkly_team.design_architecture_and_system.name
+    }
+    portfolio_and_trading = {
+      id   = launchdarkly_team.portfolio_and_trading.id
+      key  = launchdarkly_team.portfolio_and_trading.key
+      name = launchdarkly_team.portfolio_and_trading.name
+    }
+    proposition_2 = {
+      id   = launchdarkly_team.proposition_2.id
+      key  = launchdarkly_team.proposition_2.key
+      name = launchdarkly_team.proposition_2.name
+    }
+    servicing_1 = {
+      id   = launchdarkly_team.servicing_1.id
+      key  = launchdarkly_team.servicing_1.key
+      name = launchdarkly_team.servicing_1.name
+    }
+    servicing_2 = {
+      id   = launchdarkly_team.servicing_2.id
+      key  = launchdarkly_team.servicing_2.key
+      name = launchdarkly_team.servicing_2.name
     }
   }
 }
@@ -59,10 +109,10 @@ output "custom_roles" {
       key  = launchdarkly_custom_role.ii_ld_admins.key
       name = launchdarkly_custom_role.ii_ld_admins.name
     }
-    ii_lead_engineers = {
-      id   = launchdarkly_custom_role.ii_lead_engineers.id
-      key  = launchdarkly_custom_role.ii_lead_engineers.key
-      name = launchdarkly_custom_role.ii_lead_engineers.name
+    ii_lead_developers = {
+      id   = launchdarkly_custom_role.ii_lead_developers.id
+      key  = launchdarkly_custom_role.ii_lead_developers.key
+      name = launchdarkly_custom_role.ii_lead_developers.name
     }
     ii_developers = {
       id   = launchdarkly_custom_role.ii_developers.id

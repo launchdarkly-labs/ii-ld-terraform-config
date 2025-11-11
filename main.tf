@@ -18,47 +18,96 @@ data "launchdarkly_project" "interactive_investor" {
 }
 
 # Views - used for managing access to feature flags used by the different teams
-resource "launchdarkly_view" "squad_a" {
-  key         = "ii-squad-a"
-  name        = "II: Squad A"
+resource "launchdarkly_view" "acquisition" {
+  key         = "acquisition"
+  name        = "Acquisition"
   project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Squad A's feature flags"
+  description = "View for Acquisition feature flags"
   maintainer_id = var.view_maintainer_id
   generate_sdk_keys = true
-  tags = ["squad-a", "interactive-investor"]
+  tags = ["acquisition"]
 }
 
-resource "launchdarkly_view" "squad_b" {
-  key         = "ii-squad-b"
-  name        = "II: Squad B"
+resource "launchdarkly_view" "activation" {
+  key         = "activation"
+  name        = "Activation"
   project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Squad B's feature flags"
+  description = "View for Activation feature flags"
   maintainer_id = var.view_maintainer_id
   generate_sdk_keys = true
-  tags = ["squad-b", "interactive-investor"]
+  tags = ["activation"]
 }
 
-resource "launchdarkly_view" "squad_c" {
-  key         = "ii-squad-c"
-  name        = "II: Squad C"
+resource "launchdarkly_view" "content_and_research" {
+  key         = "content-and-research"
+  name        = "Content and Research"
   project_key = data.launchdarkly_project.interactive_investor.key
-  description = "View for Squad C's feature flags"
+  description = "View for Content and Research feature flags"
   maintainer_id = var.view_maintainer_id
   generate_sdk_keys = true
-  tags = ["squad-c", "interactive-investor"]
+  tags = ["content-and-research"]
 }
 
+resource "launchdarkly_view" "design_architecture_and_system" {
+  key         = "design-architecture-and-system"
+  name        = "Design, Architecture and System"
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for Design, Architecture and System feature flags"
+  maintainer_id = var.view_maintainer_id
+  generate_sdk_keys = true
+  tags = ["design-architecture-and-system"]
+}
+
+resource "launchdarkly_view" "portfolio_and_trading" {
+  key         = "portfolio-and-trading" 
+  name        = "Portfolio and Trading"
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for Portfolio and Trading feature flags"
+  maintainer_id = var.view_maintainer_id
+  generate_sdk_keys = true
+  tags = ["portfolio-and-trading"]
+}
+
+resource "launchdarkly_view" "proposition_2" {
+  key         = "proposition-2"
+  name        = "Proposition 2"
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for Proposition 2 feature flags"
+  maintainer_id = var.view_maintainer_id
+  generate_sdk_keys = true
+  tags = ["proposition-2"]
+}
+
+resource "launchdarkly_view" "servicing_1" {
+  key         = "servicing-1"
+  name        = "Servicing 1"
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for Servicing 1 feature flags"
+  maintainer_id = var.view_maintainer_id
+  generate_sdk_keys = true
+  tags = ["servicing-1"]
+}
+
+resource "launchdarkly_view" "servicing_2" {
+  key         = "servicing-2"
+  name        = "Servicing 2"
+  project_key = data.launchdarkly_project.interactive_investor.key
+  description = "View for Servicing 2 feature flags"
+  maintainer_id = var.view_maintainer_id
+  generate_sdk_keys = true
+  tags = ["servicing-2"]
+}
 # Teams
-resource "launchdarkly_team" "squad_a" {
-  key         = "ii-squad-a"
-  name        = "II: Squad A"
-  description = "Team for Squad A members with access to Squad A feature flags"
+resource "launchdarkly_team" "acquisition" {
+  key         = "ii-acquisition"
+  name        = "II: Acquisition"
+  description = "Team for Acquisition members with access to Acquisition feature flags"
   maintainers = [var.team_maintainer_id]
   member_ids  = []
   
   role_attributes {
     key    = "viewKeys"
-    values = ["ii-squad-a"]
+    values = [launchdarkly_view.acquisition.key]
   }
   
   lifecycle {
@@ -66,16 +115,16 @@ resource "launchdarkly_team" "squad_a" {
   }
 }
 
-resource "launchdarkly_team" "squad_b" {
-  key         = "ii-squad-b"
-  name        = "II: Squad B"
-  description = "Team for Squad B members with access to Squad B feature flags"
+resource "launchdarkly_team" "activation" {
+  key         = "ii-activation"
+  name        = "II: Activation"
+  description = "Team for Activation members with access to Activation feature flags"
   maintainers = [var.team_maintainer_id]
   member_ids  = []
   
   role_attributes {
     key    = "viewKeys"
-    values = ["ii-squad-b"]
+    values = [launchdarkly_view.activation.key]
   }
   
   lifecycle {
@@ -83,16 +132,101 @@ resource "launchdarkly_team" "squad_b" {
   }
 }
 
-resource "launchdarkly_team" "squad_c" {
-  key         = "ii-squad-c"
-  name        = "II: Squad C"
-  description = "Team for Squad C members with access to Squad C feature flags"
+resource "launchdarkly_team" "content_and_research" {
+  key         = "ii-content-and-research"
+  name        = "II: Content and Research"
+  description = "Team for Content and Research members with access to Content and Research feature flags"
   maintainers = [var.team_maintainer_id]
   member_ids  = []
   
   role_attributes {
     key    = "viewKeys"
-    values = ["ii-squad-c"]
+    values = [launchdarkly_view.content_and_research.key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
+}
+
+resource "launchdarkly_team" "design_architecture_and_system" {
+  key         = "ii-design-architecture-and-system"
+  name        = "II: Design, Architecture and System"
+  description = "Team for Design, Architecture and System members with access to Design, Architecture and System feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.design_architecture_and_system.key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
+}
+
+resource "launchdarkly_team" "portfolio_and_trading" {
+  key         = "ii-portfolio-and-trading"
+  name        = "II: Portfolio and Trading"
+  description = "Team for Portfolio and Trading members with access to Portfolio and Trading feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.portfolio_and_trading.key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
+}
+
+resource "launchdarkly_team" "proposition_2" {
+  key         = "ii-proposition-2"
+  name        = "II: Proposition 2"
+  description = "Team for Proposition 2 members with access to Proposition 2 feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.proposition_2.key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
+}
+
+resource "launchdarkly_team" "servicing_1" {
+  key         = "ii-servicing-1"
+  name        = "II: Servicing 1"
+  description = "Team for Servicing 1 members with access to Servicing 1 feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.servicing_1.key]
+  }
+  
+  lifecycle {
+    ignore_changes = [member_ids]
+  }
+}
+
+resource "launchdarkly_team" "servicing_2" {
+  key         = "ii-servicing-2"
+  name        = "II: Servicing 2"
+  description = "Team for Servicing 2 members with access to Servicing 2 feature flags"
+  maintainers = [var.team_maintainer_id]
+  member_ids  = []
+  
+  role_attributes {
+    key    = "viewKeys"
+    values = [launchdarkly_view.servicing_2.key]
   }
   
   lifecycle {
@@ -283,9 +417,9 @@ resource "launchdarkly_custom_role" "ii_ld_admins" {
 }
 
 # Lead Engineers Role - scoped to specific view(s), can manage flags in non-critical environments, can request changes in critical environments
-resource "launchdarkly_custom_role" "ii_lead_engineers" {
-  key         = "ii-lead-engineers"
-  name        = "II: Lead Engineers"
+resource "launchdarkly_custom_role" "ii_lead_developers" {
+  key         = "ii-lead-developers"
+  name        = "II: Lead developers"
   description = "Can manage all flag actions in non-critical environments and submit change requests for critical environments. Full access to experiments, metrics, segments, and release pipelines. Scoped to specific views via role attributes."
   base_permissions = "no_access"
   
@@ -313,7 +447,7 @@ resource "launchdarkly_custom_role" "ii_lead_engineers" {
   # Deny flag actions in critical environments - can't review/apply change approval requests
   policy_statements {
     effect      = "deny"
-    not_actions = ["reviewApprovalRequest", "applyApprovalRequest", "bypassRequiredApproval"]
+    actions = ["reviewApprovalRequest", "applyApprovalRequest", "bypassRequiredApproval"]
     resources   = ["proj/*:env/*;{critical:true}:flag/*;view:$${roleAttribute/viewKeys}"]
   }
   
