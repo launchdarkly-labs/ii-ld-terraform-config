@@ -59,5 +59,10 @@ output "custom_roles" {
       key  = launchdarkly_custom_role.qa_testers.key
       name = launchdarkly_custom_role.qa_testers.name
     }
+    sandbox_writer = {
+      id   = launchdarkly_custom_role.sandbox_writer.id
+      key  = launchdarkly_custom_role.sandbox_writer.key
+      name = launchdarkly_custom_role.sandbox_writer.name
+    }
   }
 }
