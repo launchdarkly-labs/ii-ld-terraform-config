@@ -346,7 +346,7 @@ resource "launchdarkly_custom_role" "lead_developers" {
   # Deny flag actions in critical environments - can't review/apply change approval requests
   policy_statements {
     effect    = "deny"
-    actions   = ["reviewApprovalRequest", "applyApprovalRequest", "bypassRequiredApproval"]
+    actions   = ["reviewApprovalRequest", "bypassRequiredApproval"]
     resources = ["proj/*:env/*;{critical:true}:flag/*;view:$${roleAttribute/viewKeys}"]
   }
 
@@ -360,7 +360,7 @@ resource "launchdarkly_custom_role" "lead_developers" {
   # Deny review/apply change approval requests for segments in critical environments
   policy_statements {
     effect      = "deny"
-    not_actions = ["reviewApprovalRequest", "applyApprovalRequest"]
+    not_actions = ["reviewApprovalRequest"]
     resources   = ["proj/*:env/*;{critical:true}:segment/*"]
   }
 
